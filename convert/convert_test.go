@@ -8,6 +8,7 @@ import (
 
 func TestGetImageFiles(t *testing.T) {
 	var mockFileNames []string
+	mockFileNames = append(mockFileNames, "test.jpeg")
 	mockFileNames = append(mockFileNames, "test.jpg")
 
 	type args struct {
@@ -111,6 +112,42 @@ func TestValidateImgFileExt(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := ValidateImgFileExt(tt.args.expectedFormat, tt.args.imgFiles); (err != nil) != tt.wantErr {
 				t.Errorf("ValidateImgFileFormat() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestValidateImgFileType(t *testing.T) {
+	type args struct {
+		filePath     string
+		expectedType string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "should not return an error if data type is correct",
+			args: args{
+				filePath:     "./mocks/jpg/test.jpeg",
+				expectedType: "jpg",
+			},
+			wantErr: false,
+		},
+		{
+			name: "should return an error if data type if file is the wrong type",
+			args: args{
+				filePath:     "./mocks/test.jpg",
+				expectedType: "png",
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := ValidateImgFileType(tt.args.filePath, tt.args.expectedType); (err != nil) != tt.wantErr {
+				t.Errorf("ValidateImgFileType() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

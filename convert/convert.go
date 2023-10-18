@@ -47,8 +47,6 @@ func GetImageFiles(imgFilePath string) ([]fs.DirEntry, error) {
 func ValidateImgFileExt(expectedFormat string, imgFiles []fs.DirEntry) error {
 	if expectedFormat == "png" {
 		for _, file := range imgFiles {
-			t := file.Type()
-			fmt.Print(t)
 			if !strings.HasSuffix(file.Name(), ".png") {
 				return errors.New("file name is not correct, it should end in .png")
 			}
@@ -57,13 +55,25 @@ func ValidateImgFileExt(expectedFormat string, imgFiles []fs.DirEntry) error {
 
 	if expectedFormat == "jpg" {
 		for _, file := range imgFiles {
-			t := file.Type()
-			fmt.Print(t)
 			if !strings.HasSuffix(file.Name(), ".jpg") && !strings.HasSuffix(file.Name(), ".jpeg") {
 				return errors.New("file name is not correct, it should end in .jpg or jpeg")
 			}
 		}
 	}
+
+	return nil
+}
+
+func ValidateImgFileType(filePath string, expectedType string) error {
+	fmt.Println(os.Getwd())
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		return errors.Errorf("error opening file at path %s. error: %v", filePath, err)
+	}
+	contentType := http.DetectContentType(data)
+	fmt.Println(contentType)
+	"image/jpeg"
+	"image/png"
 
 	return nil
 }

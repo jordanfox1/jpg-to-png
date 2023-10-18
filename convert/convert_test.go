@@ -2,6 +2,7 @@ package convert
 
 import (
 	"io/fs"
+	"net/http"
 	"os"
 	"testing"
 )
@@ -149,6 +150,36 @@ func TestValidateImgFileType(t *testing.T) {
 			if err := ValidateImgFileType(tt.args.filePath, tt.args.expectedType); (err != nil) != tt.wantErr {
 				t.Errorf("ValidateImgFileType() error = %v, wantErr %v", err, tt.wantErr)
 			}
+		})
+	}
+}
+
+func TestConvertJpgToPng(t *testing.T) {
+	type args struct {
+		imageBytes []byte
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    []byte
+		wantErr bool
+	}{}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ConvertJpgToPng(tt.args.imageBytes)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ConvertJpgToPng() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			actualGotContentType := http.DetectContentType(got)
+			if err != nil {
+				t.Errorf("error detecting content type: %v", err)
+			}
+			if actualGotContentType != "image/png" {
+				t.Errorf("image is wrong type expected: image/png, got %v", actualGotContentType)
+			}
+
 		})
 	}
 }

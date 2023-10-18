@@ -71,9 +71,20 @@ func ValidateImgFileType(filePath string, expectedType string) error {
 		return errors.Errorf("error opening file at path %s. error: %v", filePath, err)
 	}
 	contentType := http.DetectContentType(data)
-	fmt.Println(contentType)
-	"image/jpeg"
-	"image/png"
+
+	if strings.HasSuffix(contentType, "jpeg") || strings.HasSuffix(contentType, "jpg") {
+		if expectedType == "jpg" || expectedType == "jpeg" {
+			return nil
+		}
+		return errors.Errorf("expected type %s, got type %v", expectedType, contentType)
+	}
+
+	if strings.HasSuffix(contentType, "png") {
+		if expectedType == "png" {
+			return nil
+		}
+		return errors.Errorf("expected type %s, got type %v", expectedType, contentType)
+	}
 
 	return nil
 }

@@ -32,7 +32,7 @@ func ConvertJpgToPng(imageBytes []byte) ([]byte, error) {
 		return buf.Bytes(), nil
 	}
 
-	return nil, fmt.Errorf("unable to convert %#v to png", contentType)
+	return nil, errors.Errorf("unable to convert %#v to png", contentType)
 }
 
 func GetImageFiles(imgFilePath string) ([]fs.DirEntry, error) {

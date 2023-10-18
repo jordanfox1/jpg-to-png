@@ -155,6 +155,16 @@ func TestValidateImgFileType(t *testing.T) {
 }
 
 func TestConvertJpgToPng(t *testing.T) {
+	imgData, err := os.ReadFile("./mocks/jpg/test.jpeg")
+	if err != nil {
+		t.Fatal("error reading image data")
+	}
+
+	invalidData, err := os.ReadFile("./mocks/png/test.png")
+	if err != nil {
+		t.Fatal("error reading image data")
+	}
+
 	type args struct {
 		imageBytes []byte
 	}
@@ -163,7 +173,22 @@ func TestConvertJpgToPng(t *testing.T) {
 		args    args
 		want    []byte
 		wantErr bool
-	}{}
+	}{
+		{
+			args: args{
+				imageBytes: imgData,
+			},
+			name:    "should convert jpeg image data to png",
+			wantErr: false,
+		},
+		{
+			args: args{
+				imageBytes: invalidData,
+			},
+			name:    "should return error for invalid file",
+			wantErr: true,
+		},
+	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := ConvertJpgToPng(tt.args.imageBytes)
@@ -173,11 +198,9 @@ func TestConvertJpgToPng(t *testing.T) {
 			}
 
 			actualGotContentType := http.DetectContentType(got)
-			if err != nil {
-				t.Errorf("error detecting content type: %v", err)
-			}
-			if actualGotContentType != "image/png" {
+			if actualGotContentType != "image/png" && tt.wantErr != true {
 				t.Errorf("image is wrong type expected: image/png, got %v", actualGotContentType)
+				return
 			}
 
 		})

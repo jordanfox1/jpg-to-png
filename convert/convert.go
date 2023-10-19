@@ -2,7 +2,6 @@ package convert
 
 import (
 	"bytes"
-	"fmt"
 	"image/jpeg"
 	"image/png"
 	"io/fs"
@@ -65,7 +64,6 @@ func ValidateImgFileExt(expectedFormat string, imgFiles []fs.DirEntry) error {
 }
 
 func ValidateImgFileType(filePath string, expectedType string) error {
-	fmt.Println(os.Getwd())
 	data, err := os.ReadFile(filePath)
 	if err != nil {
 		return errors.Errorf("error opening file at path %s. error: %v", filePath, err)
